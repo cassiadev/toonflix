@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
         future: webtoons,
         builder: (context, AsyncSnapshot snapshot) { //  snapshot를 통해서는 Future가 데이터를 받았는지, 오류는 안 났는지 등 상태를 알 수 있음
           if (snapshot.hasData) {
-            return ListView.builder(
+            return ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) { // 유저가 안 보고 있는 아이템을 메모리에서 식제해 두는 부분. ListView.builder의 필수 부분
@@ -35,6 +35,9 @@ class HomeScreen extends StatelessWidget {
                 var webtoon = snapshot.data[index];
                 return Text(webtoon.title);
               },
+              separatorBuilder: (context, index) => SizedBox(
+                width: 20,
+              ),
             );
           }
           return const Center(
