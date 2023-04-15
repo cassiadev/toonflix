@@ -3,35 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:toonflix/models/webtoon_model.dart';
 import 'package:toonflix/services/api_services.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key}) : super(key: key); // Future 타입의 클래스 변수가 선언된 이상 key를 가진 이 생성자는 더이상 const가 될 수 없음
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<WebtoonModel> webtoons = [];
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    waitForWebtoons();
-  }
-
-  void waitForWebtoons() async {
-    webtoons = await ApiService.getTodaysToons();
-    isLoading = false;
-    setState(() { // setState() 호출 잊지 말기
-
-    });
-  }
+  Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
 
   @override
   Widget build(BuildContext context) {
-    print(webtoons);
-    print(isLoading);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -44,6 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
         foregroundColor: Colors.green,
         backgroundColor: Colors.white,
         elevation: 2,
+      ),
+      body: FutureBuilder(  // FutureBuilder를 통해 Future와 builder함수를 받아 보다 편하게 UI에 비동기 데이터를 표현할 수 있음
+        future: webtoons,
+        builder: (context, snapshot) {  //  snapshot를 통해서는 Future가 데이터를 받았는지, 오류는 안 났는지 등 상태를 알 수 있음
+          if (snapshot.hasData) {
+            return const Text("There is data!");
+          }
+          return const Text("Loading...");
+        },
       ),
     );
   }
