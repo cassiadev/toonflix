@@ -6,7 +6,7 @@ import 'package:toonflix/services/api_services.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key); // Future 타입의 클래스 변수가 선언된 이상 key를 가진 이 생성자는 더이상 const가 될 수 없음
 
-  Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
+  final Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,9 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.hasData) {
             return const Text("There is data!");
           }
-          return const Text("Loading...");
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
     );
