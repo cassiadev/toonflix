@@ -25,9 +25,13 @@ class HomeScreen extends StatelessWidget {
       ),
       body: FutureBuilder(  // FutureBuilder를 통해 Future와 builder함수를 받아 보다 편하게 UI에 비동기 데이터를 표현할 수 있음
         future: webtoons,
-        builder: (context, snapshot) {  //  snapshot를 통해서는 Future가 데이터를 받았는지, 오류는 안 났는지 등 상태를 알 수 있음
+        builder: (context, AsyncSnapshot snapshot) { //  snapshot를 통해서는 Future가 데이터를 받았는지, 오류는 안 났는지 등 상태를 알 수 있음
           if (snapshot.hasData) {
-            return const Text("There is data!");
+            return ListView(
+              children: [
+                for(var webtoon in snapshot.data!) Text(webtoon.title)
+              ],
+            );
           }
           return const Center(
             child: CircularProgressIndicator(),
