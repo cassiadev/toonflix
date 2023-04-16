@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:toonflix/models/webtoon_model.dart';
 import 'package:toonflix/services/api_services.dart';
+import 'package:toonflix/widgets/webtoon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key); // Future 타입의 클래스 변수가 선언된 이상 key를 가진 이 생성자는 더이상 const가 될 수 없음
@@ -27,23 +28,38 @@ class HomeScreen extends StatelessWidget {
         future: webtoons,
         builder: (context, AsyncSnapshot snapshot) { //  snapshot를 통해서는 Future가 데이터를 받았는지, 오류는 안 났는지 등 상태를 알 수 있음
           if (snapshot.hasData) {
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) { // 유저가 안 보고 있는 아이템을 메모리에서 식제해 두는 부분. ListView.builder의 필수 부분
-                print(index);
-                var webtoon = snapshot.data[index];
-                return Text(webtoon.title);
-              },
-              separatorBuilder: (context, index) => SizedBox(
-                width: 20,
-              ),
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Expanded(child: makeList(snapshot)),  // ListView에 높이 제한이 설정되어있지 않으면 역시 높이 제한이 없는 Column 안에 자식요소로 들어갈 수 없으므로 오륙가 남. Expanded를 사용해 SizedBox에 주고 남는 공간을 적절히 채우도록 함
+              ],
             );
           }
           return const Center(
             child: CircularProgressIndicator(),
           );
         },
+      ),
+    );
+  }
+
+  ListView makeList(AsyncSnapshot<dynamic> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),  // 패딩을 미리 줘야 가장자리 요소가 어색하게 보이는 걸 막을 수 있다
+      itemBuilder: (context, index) { // 유저가 안 보고 있는 아이템을 메모리에서 식제해 두는 부분. ListView.builder의 필수 부분
+        var webtoon = snapshot.data[index];
+        return Webtoon(
+          title: webtoon.title,
+          thumb: webtoon.thumb,
+          id: webtoon.id,
+        );
+      },
+      separatorBuilder: (context, index) => const SizedBox(
+        width: 40,
       ),
     );
   }

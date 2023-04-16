@@ -16,7 +16,6 @@ class ApiService {  // 클래스 자체가 state를 다루지 않기 때문에 �
       final List<dynamic> webtoons = jsonDecode(response.body); // List<dynamic>은 없어도 되긴 함. json 형식이 dynamic 값으로 이루어진 리스트라는 점을 기억할 것
       for (var webtoon in webtoons) {
         webtoonInstances.add(WebtoonModel.fromJson(webtoon));
-        print(webtoon);
       }
       return webtoonInstances;
     }
